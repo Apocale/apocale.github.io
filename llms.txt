@@ -1,0 +1,15 @@
+# Isma Plugins
+
+> Two free, open-source plugins for Adobe Premiere Pro, made by a video editor (Isma).
+
+## Khanjar
+Command palette for Premiere Pro on Mac. Press ⌘J in Premiere, type a few letters of any effect or preset, press Enter: it is applied to every selected clip at once. ⌘Z takes it back.
+- Site: https://apocale.github.io/khanjar/
+- Download: https://github.com/Apocale/khanjar/releases/latest
+- Source: https://github.com/Apocale/khanjar
+
+## Isma Organizer
+Premiere Pro panel (Mac and Windows, Premiere Pro 2022 to 2026). One click files the whole project into numbered bins (01 sequence … 10 exports), Preview first, Undo any run. A B-roll tab searches Pinterest videos from inside Premiere, saves one in a click, and puts it one drag from the timeline.
+- Site: https://apocale.github.io/isma-organizer/
+- Download: https://github.com/Apocale/isma-organizer/archive/refs/heads/main.zip
+- Source: https://github.com/Apocale/isma-organizer

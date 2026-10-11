@@ -1,0 +1,116 @@
+/* Isma Plugins: one page, two worlds. Left, Khanjar (black, fire, the dagger: apocale.github.io/khanjar).
+   Right, Isma Organizer (Frutiger Aero: sky, sun, clouds, hills, bubbles, glass: apocale.github.io/isma-organizer).
+   The seam meets the top of the screen at --st and the bottom at --sb (50% / 50%: straight down the middle). */
+:root{
+  --kh-bg:#0b0b0c;--kh-accent:#ff4d2e;--kh-ink:#1a0703;--kh-steel:#c9ced6;--kh-text:#ecebe8;--kh-muted:#a19f9a;
+  --org-ink:#0b3049;
+  --st:50%;--sb:50%;
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --display:"Archivo",system-ui,sans-serif;--sans:"Geist",system-ui,-apple-system,sans-serif;--aero:"Open Sans","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--kh-bg);color:var(--kh-text);font:400 16px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid #5ec4ff;outline-offset:3px;border-radius:4px}
+kbd{display:inline-grid;place-items:center;min-width:1.75em;height:1.75em;padding:0 .35em;margin:0 .06em;border:1px solid rgba(255,255,255,.22);border-bottom-width:2px;border-radius:6px;font:500 .84em/1 var(--sans);color:#fff;background:#18181b;vertical-align:.06em}
+.nw{white-space:nowrap}
+
+.stage{position:relative;min-height:100vh;min-height:100svh;overflow:hidden;isolation:isolate}
+.world{position:absolute;inset:0;overflow:hidden}
+.kh{background:var(--kh-bg);clip-path:polygon(0 0,var(--st) 0,var(--sb) 100%,0 100%)}
+.org{clip-path:polygon(var(--st) 0,100% 0,100% 100%,var(--sb) 100%)}
+#gl{position:absolute;inset:0;z-index:1;width:100%;height:100%;pointer-events:none}
+.seam{position:absolute;z-index:2;top:0;bottom:0;left:var(--st);width:2px;margin-left:-1px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.8) 18%,rgba(255,255,255,.8) 82%,rgba(255,255,255,0));box-shadow:0 0 18px 2px rgba(255,140,90,.35)}
+
+/* ---- Khanjar's world ---- */
+.kh-glow{position:absolute;inset:0;background:radial-gradient(60% 46% at 28% 104%,rgba(255,77,46,.3),rgba(255,77,46,0) 70%),radial-gradient(42% 34% at 30% 0%,rgba(191,210,255,.07),rgba(0,0,0,0) 70%)}
+.embers i{position:absolute;bottom:-12px;left:var(--x);width:4px;height:4px;border-radius:50%;background:#ffb36b;box-shadow:0 0 8px 2px rgba(255,77,46,.8);opacity:0;animation:ember var(--d) linear var(--o) infinite}
+@keyframes ember{0%{transform:translate(0,0);opacity:0}12%{opacity:1}100%{transform:translate(46px,-74vh);opacity:0}}
+
+/* ---- Isma Organizer's world (the same sky as its site) ---- */
+.sky{position:absolute;inset:0;background:linear-gradient(180deg,#0a58bd 0%,#1570d6 20%,#2d8de6 40%,#58aef1 57%,#9bd6fb 71%,#d6f1ff 84%,#f0fbff 100%)}
+.sun{position:absolute;top:-30vmax;right:-24vmax;width:72vmax;height:72vmax;border-radius:50%;
+  background:radial-gradient(circle,#fff 0,#fff 2.4%,rgba(255,252,222,.92) 4.2%,rgba(255,248,200,.5) 8.5%,rgba(255,255,255,.2) 19%,rgba(255,255,255,0) 46%)}
+.rays{position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(rgba(255,255,255,.13) 0deg 2.5deg,rgba(255,255,255,0) 2.5deg 12deg);
+  -webkit-mask:radial-gradient(circle,#000 0,rgba(0,0,0,.5) 16%,transparent 46%);mask:radial-gradient(circle,#000 0,rgba(0,0,0,.5) 16%,transparent 46%);animation:spin 260s linear infinite}
+@keyframes spin{to{transform:rotate(1turn)}}
+.cloud{position:absolute;height:auto;overflow:visible;animation:drift var(--d,120s) ease-in-out var(--o,0s) infinite alternate}
+@keyframes drift{to{transform:translate3d(var(--x,60px),0,0)}}
+.c1{width:24vw;right:-5%;top:10%;--d:150s;--x:-60px}
+.c2{width:16vw;left:55%;top:38%;--d:130s;--o:-40s;--x:50px;opacity:.95}
+.c3{width:9vw;right:31%;top:5%;--d:110s;--o:-20s;--x:40px;opacity:.9}
+.hills{position:absolute;left:0;bottom:0;width:100%;height:clamp(200px,34vh,360px)}
+.bubble{position:absolute;width:var(--s);height:var(--s);border-radius:50%;
+  background:radial-gradient(circle at 31% 25%,rgba(255,255,255,.95) 0,rgba(255,255,255,.55) 5%,rgba(255,255,255,0) 15%),radial-gradient(circle at 70% 79%,rgba(255,255,255,.45) 0,rgba(255,255,255,0) 12%),
+    radial-gradient(circle,rgba(255,255,255,0) 54%,rgba(255,255,255,.1) 66%,rgba(190,240,255,.26) 80%,rgba(255,255,255,.75) 95%,rgba(255,255,255,.15) 100%);
+  box-shadow:inset 7px 9px 20px -6px rgba(255,160,230,.32),inset -9px -11px 22px -6px rgba(80,215,255,.38),inset 0 0 5px rgba(255,255,255,.3),0 6px 18px rgba(0,60,120,.1);
+  animation:bob var(--d,11s) ease-in-out var(--o,0s) infinite}
+@keyframes bob{50%{transform:translate3d(7px,-24px,0)}}
+
+/* ---- the name, across both worlds ---- */
+.top{position:absolute;z-index:4;left:50%;top:clamp(20px,4.4vh,44px);transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);text-align:center;color:#fff;pointer-events:none}
+.wm{font:600 clamp(17px,1.5vw,22px)/1 var(--sans);letter-spacing:.34em;text-transform:uppercase;padding-left:.34em;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.wm-line{display:block;width:150px;height:2px;margin:13px auto 11px;border-radius:2px;background:linear-gradient(90deg,var(--kh-accent) 0 50%,#6fd0ff 50% 100%)}
+.tag{font-size:13.5px;color:rgba(255,255,255,.84);text-shadow:0 1px 8px rgba(0,0,0,.4)}
+
+/* ---- each plugin, on its side ---- */
+.side{position:absolute;z-index:3;top:0;bottom:0;width:50%;display:flex;align-items:flex-end;justify-content:center;padding:clamp(120px,18vh,180px) clamp(24px,5vw,84px) clamp(70px,11vh,120px)}
+.side-kh{left:0}
+.side-org{right:0}
+.block{width:min(470px,100%)}
+
+.brand{display:flex;align-items:baseline;gap:12px;margin-bottom:22px}
+.brand .ar{font-family:"Aref Ruqaa",serif;font-weight:700;font-size:34px;line-height:1;color:var(--kh-accent);transform:translateY(5px)}
+.brand .lat{font-family:var(--display);font-stretch:125%;font-weight:800;letter-spacing:.08em;font-size:15px;text-transform:uppercase}
+.kh-h{font-family:var(--display);font-stretch:125%;font-weight:800;text-transform:uppercase;letter-spacing:-.01em;line-height:.95;font-size:clamp(34px,3.5vw,60px)}
+.kh-h em{font-style:normal;color:var(--kh-steel)}
+.kh-p{margin-top:18px;max-width:430px;font-size:16.5px;line-height:1.55;color:var(--kh-muted)}
+.facts{display:flex;align-items:center;gap:9px;margin-top:16px;font-size:13.5px;color:var(--kh-muted)}
+.pr{display:inline-grid;place-items:center;flex:none;width:22px;height:22px;border-radius:5px;background:#00005b;border:1.5px solid #9999ff;color:#9999ff;font:700 11px/1 var(--sans);letter-spacing:-.02em}
+.ctas{position:relative;display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.kbtn{display:inline-flex;align-items:center;height:48px;padding:0 22px;border-radius:999px;font:550 15px/1 var(--sans);white-space:nowrap;transition:transform .2s var(--ease),background .2s,border-color .2s}
+.kbtn:active{transform:translateY(1px) scale(.98)}
+.kbtn-p{background:var(--kh-accent);color:var(--kh-ink)}
+.kbtn-p:hover{background:#ff6446}
+.kbtn-g{border:1px solid rgba(255,255,255,.18);color:var(--kh-text)}
+.kbtn-g:hover{border-color:rgba(255,255,255,.34);background:rgba(255,255,255,.04)}
+
+.glass{position:relative;padding:26px 28px 28px;border-radius:20px;color:var(--org-ink);font-family:var(--aero);
+  background:linear-gradient(180deg,rgba(255,255,255,.8) 0%,rgba(255,255,255,.55) 48%,rgba(255,255,255,.42) 52%,rgba(255,255,255,.6) 100%);
+  border:1px solid rgba(255,255,255,.95);box-shadow:0 20px 44px rgba(10,60,120,.26),inset 0 1px 0 #fff;
+  -webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4)}
+.glass::before{content:"";position:absolute;left:1px;right:1px;top:1px;height:44%;border-radius:19px 19px 50% 50%/19px 19px 22px 22px;background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,255,255,0));pointer-events:none}
+.org-brand{position:relative;display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:19px}
+.org-brand svg{flex:none;width:40px;height:40px;filter:drop-shadow(0 4px 8px rgba(0,40,100,.3))}
+.org-brand b{font-weight:700}
+.org-h{position:relative;font:300 clamp(32px,3.1vw,52px)/1.04 var(--aero);letter-spacing:-.03em}
+.org-p{position:relative;margin-top:14px;font-size:16px;line-height:1.55;color:#24506f}
+.org-facts{position:relative;color:#2d5b7c}
+.abtn{position:relative;display:inline-flex;align-items:center;height:46px;padding:0 22px;border-radius:999px;font:600 15px/1 var(--aero);white-space:nowrap;transition:filter .2s,transform .1s}
+.abtn:active{transform:translateY(1px)}
+.abtn-p{color:#fff;text-shadow:0 1px 1px rgba(0,60,10,.55);border:1px solid #1d6e2c;background:linear-gradient(180deg,#b4edae 0%,#62c765 28%,#1f8a35 29%,#17742b 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 6px 16px rgba(20,100,40,.3)}
+.abtn-p:hover{filter:brightness(1.08)}
+.abtn-g{color:#0b4f82;border:1px solid rgba(40,110,170,.55);background:linear-gradient(180deg,#fff 0%,#e6f4fd 48%,#cde6f8 50%,#e1f0fb 100%);box-shadow:inset 0 1px 0 #fff,0 4px 12px rgba(10,60,120,.15)}
+.abtn-g:hover{filter:brightness(1.04)}
+
+.foot{position:absolute;z-index:4;left:50%;bottom:14px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);text-align:center;font-size:12px;color:rgba(255,255,255,.8);text-shadow:0 1px 6px rgba(0,0,0,.55)}
+.foot a{text-decoration:underline;text-underline-offset:2px}
+
+/* ---- phones: Khanjar on top, Isma Organizer below, the seam goes across ---- */
+@media (max-width:760px){
+  .stage{display:flex;flex-direction:column}
+  .kh{inset:0 0 50% 0;clip-path:none}
+  .org{inset:50% 0 0 0;clip-path:none}
+  .seam{left:0;right:0;top:50%;bottom:auto;width:auto;height:2px;margin:-1px 0 0;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.85) 20%,rgba(255,255,255,.85) 80%,rgba(255,255,255,0))}
+  .side{position:relative;width:100%;min-height:100svh;padding:120px 20px 70px}
+  .side-org{padding-top:96px;padding-bottom:84px}
+  .top{top:24px}
+  .tag{font-size:12.5px}
+  .foot{bottom:16px;color:#fff}
+  .c1{width:58vw;right:-14%;top:4%}.c2{width:38vw;left:2%;top:30%}.c3{display:none}
+  .sun{top:-42vmax;right:-46vmax}
+  .hills{height:clamp(170px,26vh,260px)}
+}
+@media (prefers-reduced-motion:reduce){.embers i,.cloud,.bubble,.rays{animation:none}.embers i{opacity:.55;bottom:30%}}
