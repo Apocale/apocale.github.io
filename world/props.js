@@ -1,10 +1,11 @@
-// Khanjar's side: the dagger planted in a faceted stone on the summit, like a sword in the stone,
-// its steel lit from below by the lava and edged by the moon.
+// Khanjar's side: the dagger planted in a cut stone on the summit, like a sword in the stone,
+// its steel lit from below by the lava and touched by the moon; the lava seeps out at the stone's foot.
+import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js';
 import { makeDagger } from '../shared/dagger.js';
-import { ROCK, rocksH, hillsH } from './terrain.js';
+import { ROCK, PLATEAU } from './terrain.js';
 
-// what the steel reflects: the night above, the lava's glow rising to the horizon all around, and thin strips of
-// cold light that draw the edges. The flat of the blade looks at the horizon: fire at its foot, night at its top.
+// what the steel reflects: the night above, the lava's glow rising to the horizon all around, the moon, and thin strips
+// of cold light that draw the edges. The flat of the blade looks at the horizon on the left: lava at its foot, the moon higher.
 export function fireEnv(THREE, renderer) {
   const pmrem = new THREE.PMREMGenerator(renderer);
   const env = new THREE.Scene();
@@ -18,12 +19,11 @@ export function fireEnv(THREE, renderer) {
       c = mix(c, vec3(.03, .034, .055), smoothstep(-.03, .13, y));                     // its glow ends just over the horizon
       c += vec3(.05, .06, .1) * smoothstep(.05, .6, y) * smoothstep(.3, -.9, vP.x);   // the moonlit night on the left
       c += vec3(.02, .025, .05) * smoothstep(.4, 1., y);
-      // where the flat of the blade looks (the horizon on the left): fire at its foot, dark steel, a thin cold line
-      float w = smoothstep(.55, .9, -vP.x);
+      float w = smoothstep(.55, .9, -vP.x);                                            // where the flat of the blade looks
       vec3 band = mix(vec3(2.1, .5, .13), vec3(.2, .04, .02), smoothstep(.0, .07, y));
       band = mix(band, vec3(.03, .036, .065), smoothstep(.06, .1, y));
-      band += vec3(.05, .06, .1) * smoothstep(.12, .3, y);
-      band += vec3(2.4, 2.6, 3.) * smoothstep(.115, .128, y) * smoothstep(.155, .142, y);
+      band += vec3(.06, .07, .12) * smoothstep(.1, .3, y);
+      band += vec3(1.2, 1.3, 1.5) * smoothstep(.115, .128, y) * smoothstep(.155, .142, y);
       c = mix(c, band, w * smoothstep(-.1, .02, y) * (1. - smoothstep(.34, .42, y)));
       gl_FragColor = vec4(c, 1.); }`,
   })));
@@ -33,8 +33,10 @@ export function fireEnv(THREE, renderer) {
   };
   panel(16, .32, 0, 9, 2, 7, 0xe2e8ff);        // a thin cold line overhead
   panel(.32, 14, 9, 2, 6, 6, 0xe2e8ff);        // and one on the right, in front: the edges and the ridge
-  panel(.3, 12, -7, 3, -8, 4, 0xb4c2ec);       // the moon, behind on the left: a rim on the back edge
+  panel(.3, 12, -7, 3, -8, 4, 0xb4c2ec);       // behind on the left: a rim on the back edge
   panel(4, 1.4, -3, -1.2, 9, 2.4, 0xff6a30);   // embers low in front
+  const moon = new THREE.Mesh(new THREE.CircleGeometry(1.15, 40), new THREE.MeshBasicMaterial({ color: new THREE.Color(0xe8ecf6).multiplyScalar(3.4), side: THREE.DoubleSide }));
+  moon.position.set(-23.5, 5.2, 6.2); moon.lookAt(0, 0, 0); env.add(moon);   // the moon, high on the flat of the blade
   const tex = pmrem.fromScene(env, .015).texture;
   pmrem.dispose();
   return tex;
@@ -43,39 +45,47 @@ export function fireEnv(THREE, renderer) {
 // a seeded random, so the stone is the same on every visit
 function rand(seed) { let s = seed >>> 0; return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296; }
 
+export const STONE = { yaw: -.55, foot: [.74, .57] };   // turned like the blade: its long side takes the blade's curve   // its turn, and the half sizes of its foot where it meets the summit
+
 export function makeProps(THREE) {
   const group = new THREE.Group();
-  const groundY = Math.min(rocksH(ROCK.x, ROCK.z), hillsH(ROCK.x, ROCK.z));
 
-  // the stone: an icosahedron pushed out of shape, a flat top, sharp facets
-  const g = new THREE.IcosahedronGeometry(1, 1), p = g.attributes.position, r = rand(11), seen = new Map();
-  for (let i = 0; i < p.count; i++) {
-    const x = p.getX(i), y = p.getY(i), z = p.getZ(i), k = `${x.toFixed(3)},${y.toFixed(3)},${z.toFixed(3)}`;
-    if (!seen.has(k)) seen.set(k, [.8 + .32 * r(), (r() - .5) * .14]);
-    const [s, j] = seen.get(k);
-    let yy = y * s;
-    if (yy > .5) yy = .5 + (yy - .5) * .25 + j;
-    p.setXYZ(i, x * s * 1.35, Math.max(yy, -.6), z * s * 1.05);
+  // the stone: a cut block, tapered, its corners chamfered, every edge sharp (the hull of a few jittered rings)
+  const r = rand(11), pts = [];
+  for (const [y, hx, hz] of [[-.66, 1, .78], [-.18, .96, .74], [.24, .8, .62], [.5, .56, .44]]) {
+    for (let i = 0; i < 8; i++) {
+      const a = i / 8 * Math.PI * 2 + (r() - .5) * .3, cx = Math.cos(a), cz = Math.sin(a);
+      const k = 1 / Math.max(Math.abs(cx), Math.abs(cz)) * (i % 2 ? .86 : 1) * (.9 + .1 * r());
+      pts.push(new THREE.Vector3(cx * k * hx, y + (r() - .5) * .07 + (y > .4 ? cx * .05 : 0), cz * k * hz));
+    }
   }
-  g.computeVertexNormals();
-  const stoneMat = new THREE.MeshStandardMaterial({ color: 0x18191d, roughness: .6, metalness: .12, flatShading: true, envMapIntensity: .6 });
-  const stone = new THREE.Mesh(g, stoneMat);
-  const S = .66;
+  const S = .76;
+  const seep = { value: 1 };
+  const stoneMat = new THREE.MeshStandardMaterial({ color: 0x24252c, roughness: .4, metalness: .3, flatShading: true, envMapIntensity: .8 });
+  const baseY = PLATEAU + .66 * S - .07;                         // its foot a little sunk in the plateau
+  stoneMat.onBeforeCompile = sh => {             // the lava light seeping at its foot
+    sh.uniforms.uSeep = seep;
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying float vLy;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvLy = position.y;');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vLy;\nuniform float uSeep;')
+      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += vec3(1., .3, .07) * uSeep * smoothstep(-.56, -.64, vLy) * 1.6;');
+  };
+  const stone = new THREE.Mesh(new ConvexGeometry(pts), stoneMat);
   stone.scale.setScalar(S);
-  stone.rotation.y = .5;
-  stone.position.set(ROCK.x, groundY - .04, ROCK.z);           // seated in the summit
+  stone.rotation.y = STONE.yaw;
+  stone.position.set(ROCK.x, baseY, ROCK.z);
   group.add(stone);
-  const top = new THREE.Vector3(ROCK.x, groundY - .04 + .52 * S, ROCK.z);
+  const top = new THREE.Vector3(ROCK.x, baseY + .5 * S, ROCK.z);
 
   // the slot where the blade enters, still hot
-  const slot = new THREE.Mesh(new THREE.BoxGeometry(.42, .035, .12), new THREE.MeshBasicMaterial({ color: new THREE.Color(0xff5a2a).multiplyScalar(2.2) }));
-  slot.position.copy(top).add(new THREE.Vector3(0, .005, 0)); slot.rotation.y = -.35;
+  const slot = new THREE.Mesh(new THREE.BoxGeometry(.4, .03, .11), new THREE.MeshBasicMaterial({ color: new THREE.Color(0xff5a2a).multiplyScalar(2.2) }));
+  slot.position.copy(top).add(new THREE.Vector3(0, .004, 0)); slot.rotation.y = -.55;
   group.add(slot);
 
   // the dagger, tip down in the stone, the handle up, leaning a little; its flat turned to catch the fire
   const { pivot, dagger, materials } = makeDagger(THREE);
   materials.steel.envMapIntensity = 1.5; materials.steel.roughness = .1;
-  const entry = new THREE.Object3D(); entry.position.set(2.28, .24, 0); dagger.add(entry);   // where the blade meets the stone
+  const entry = new THREE.Object3D(); entry.position.set(2.55, .34, 0); dagger.add(entry);   // where the blade meets the stone (the tip stays inside)
   const holder = new THREE.Group();
   holder.add(pivot);
   pivot.rotation.set(0, 0, -Math.PI / 2 + .13);
@@ -90,11 +100,11 @@ export function makeProps(THREE) {
   place(0);
 
   // the light: the lava under the summit, a little fire on the other side, the moon behind, a cold fill
-  const lava = new THREE.PointLight(0xff5a24, 5, 12, 1.8); lava.position.copy(top).add(new THREE.Vector3(.8, -1.1, 2.2));
-  const lava2 = new THREE.PointLight(0xff3a12, 3, 8, 1.8); lava2.position.copy(top).add(new THREE.Vector3(-1.5, -.7, .6));
-  const moon = new THREE.DirectionalLight(0xb7c4ff, 1.3); moon.position.set(ROCK.x - 7, 12, ROCK.z - 8); moon.target.position.copy(top);
+  const lava = new THREE.PointLight(0xff5a24, 3.2, 12, 1.8); lava.position.copy(top).add(new THREE.Vector3(.8, -1.35, 2.4));
+  const lava2 = new THREE.PointLight(0xff3a12, 2, 8, 1.8); lava2.position.copy(top).add(new THREE.Vector3(-1.5, -.9, .6));
+  const moon = new THREE.DirectionalLight(0xb7c4ff, 2.3); moon.position.set(ROCK.x - 7, 12, ROCK.z - 8); moon.target.position.copy(top);
   const fill = new THREE.DirectionalLight(0xdfe6ff, .22); fill.position.set(ROCK.x + 3, top.y + 3, ROCK.z + 12); fill.target.position.copy(top);
   group.add(lava, lava2, moon, moon.target, fill, fill.target);
 
-  return { group, holder, place, top, lava, lava2, slot, stone, base: { lava: lava.intensity, lava2: lava2.intensity } };
+  return { group, holder, place, top, lava, lava2, slot, stone, seep, base: { lava: lava.intensity, lava2: lava2.intensity } };
 }

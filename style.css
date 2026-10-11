@@ -110,6 +110,18 @@ kbd{display:inline-grid;place-items:center;min-width:1.75em;height:1.75em;paddin
 .side-org .block{transform:translateX(calc(var(--k,0) * 16px)) scale(calc(1 - var(--k,0) * .03));transform-origin:100% 100%}
 .brand .lat,.kh-h,.kh-p,.side-kh .facts{text-shadow:0 2px 16px rgba(0,0,0,.6)}
 .side-kh .block{width:min(600px,100%)}                         /* the headline holds on two lines up to its 50px */
+.side-org .block{width:min(560px,100%)}                        /* and the Organizer's on one line, on a computer */
+
+/* ---- the opening (index.html adds html.intro; scene.js reveals the words as the dawn comes; intro-done is the safety net) ----
+   until the 3D dawn plays, the CSS shows one night across the whole width */
+html.intro:not(.intro-done) .world.kh{clip-path:none}
+html.intro:not(.intro-done) .world.org,html.intro:not(.intro-done) .seam{opacity:0}
+.world.org{transition:opacity .8s var(--ease)}
+.top,.side .block,.foot{transition:opacity 1s var(--ease),translate 1s var(--ease)}
+html.intro .top,html.intro .side .block,html.intro .foot{opacity:0;translate:0 12px}
+html.intro .r-kh .top,html.intro .r-kh .side-kh .block,html.intro .r-org .side-org .block,html.intro .r-org .foot,
+html.intro-done .top,html.intro-done .side .block,html.intro-done .foot,html.intro .side .block:focus-within{opacity:1;translate:0 0}
+.kh-h,.org-h{text-wrap:balance}
 
 /* ---- phones: Khanjar on top, Isma Organizer below, the seam goes across ---- */
 @media (max-width:760px){

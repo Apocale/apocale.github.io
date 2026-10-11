@@ -12,24 +12,21 @@ export function makeFlare(THREE, shared) {
       uniform vec3 uSunPx;
       uniform float uShine;
       uniform vec4 uView;                      // the viewport it is drawn in (device px)
-      float hex(vec2 p){ p = abs(p); return max(p.x * .866 + p.y * .5, p.y); }
       void main(){
         float day = smoothstep(.45, .92, dayAt(gl_FragCoord.xy)) * smoothstep(.5, .95, dayAt(uSunPx.xy));   // no flare while the sun is still in the night
         if (day < .002 || uSunPx.z < .002){ gl_FragColor = vec4(0.); return; }
         vec2 p = gl_FragCoord.xy, s = uSunPx.xy, ax = uView.xy + uView.zw * .5 - s;
         float u = 1. / uView.w, r = length(p - s) * u;
         vec3 col = vec3(1., .96, .86) * (exp(-r * 26.) * .24 + exp(-r * 7.) * .06);
-        col += (.5 + .5 * cos(6.2832 * (r * 3.2 + vec3(0., .33, .67)))) * exp(-abs(r - .26) * 70.) * .03;
-        // the ghosts: k along the axis, radius, tint, hexagonal or round
-        vec4 G[6];
-        G[0] = vec4(.28, .028, 0., 1.); G[1] = vec4(.5, .06, 1., 0.); G[2] = vec4(.72, .022, 2., 1.);
-        G[3] = vec4(1.12, .085, 3., 0.); G[4] = vec4(1.34, .035, 4., 1.); G[5] = vec4(1.6, .12, 5., 0.);
-        for (int i = 0; i < 6; i++){
-          vec2 q = (p - (s + ax * G[i].x)) * u;
-          float dg = G[i].w > .5 ? hex(q) : length(q), rad = G[i].y;
-          float disc = smoothstep(rad, rad * .55, dg), ring = exp(-abs(dg - rad * .94) / (rad * .05 + .0015));
-          vec3 tint = .6 + .4 * cos(6.2832 * (G[i].z * .17 + vec3(.0, .33, .67)));
-          col += tint * (disc * .085 + ring * .11);
+        col += (.5 + .5 * cos(6.2832 * (r * 3.2 + vec3(0., .33, .67)))) * exp(-abs(r - .26) * 70.) * .022;
+        // three soft round ghosts along the axis: k, radius, tint
+        vec3 G[3];
+        G[0] = vec3(.5, .05, 1.); G[1] = vec3(.78, .02, 2.); G[2] = vec3(1.15, .075, 3.);
+        for (int i = 0; i < 3; i++){
+          float dg = length((p - (s + ax * G[i].x)) * u), rad = G[i].y;
+          float disc = smoothstep(rad, rad * .4, dg), ring = exp(-abs(dg - rad * .94) / (rad * .07 + .0015));
+          vec3 tint = .65 + .35 * cos(6.2832 * (G[i].z * .17 + vec3(.0, .33, .67)));
+          col += tint * (disc * .035 + ring * .04);
         }
         gl_FragColor = vec4(col * day * uSunPx.z * (1. + .35 * uShine), 1.);
       }`,
@@ -53,9 +50,9 @@ export function makeDuskBand(THREE, shared) {
       uniform float uBandPx;
       void main(){
         float dy = ((1. - gl_FragCoord.y / uRes.y) - uSeam.x) * uRes.y / uBandPx;
-        float a = exp(-dy * dy * 1.4);
-        vec3 c = dy < 0. ? mix(vec3(1., .52, .3), vec3(.22, .05, .035), smoothstep(0., -1.3, dy))
-                         : mix(vec3(1., .6, .42), vec3(.34, .24, .56), smoothstep(0., 1.4, dy));
+        float a = exp(-dy * dy * (dy < 0. ? .9 : 1.6));                  // opaque on the border: the two halves meet unseen
+        vec3 c = dy < 0. ? mix(mix(vec3(1., .76, .47), vec3(.93, .43, .44), smoothstep(0., -.6, dy)), vec3(.36, .27, .55), smoothstep(-.5, -1.5, dy))
+                         : mix(vec3(1., .76, .47), vec3(.93, .95, 1.), smoothstep(0., 1.1, dy));
         gl_FragColor = vec4(c * a, a);
       }`,
   }));
