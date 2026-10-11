@@ -54,6 +54,22 @@ kbd{display:inline-grid;place-items:center;min-width:1.75em;height:1.75em;paddin
 .wm{font:600 clamp(17px,1.5vw,22px)/1 var(--sans);letter-spacing:.34em;text-transform:uppercase;padding-left:.34em;text-shadow:0 2px 14px rgba(0,0,0,.35)}
 .wm-line{display:block;width:150px;height:2px;margin:13px auto 11px;border-radius:2px;background:linear-gradient(90deg,var(--kh-accent) 0 50%,#6fd0ff 50% 100%)}
 .tag{font-size:13.5px;color:rgba(255,255,255,.84);text-shadow:0 1px 8px rgba(0,0,0,.4)}
+/* the 45-second video: a button on the seam, the film over both worlds */
+.play{pointer-events:auto;display:inline-flex;align-items:center;gap:10px;margin-top:16px;height:42px;padding:0 18px 0 6px;border-radius:999px;border:1px solid transparent;
+  background:linear-gradient(rgba(10,10,14,.6),rgba(10,10,14,.6)) padding-box,linear-gradient(90deg,var(--kh-accent),#6fd0ff) border-box;
+  color:#fff;font:600 14px/1 var(--sans);letter-spacing:.01em;cursor:pointer;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(0,0,0,.3);transition:transform .2s var(--ease),box-shadow .2s}
+.play:hover{transform:translateY(-1px);box-shadow:0 10px 30px rgba(0,0,0,.4),0 0 26px rgba(255,120,80,.22)}
+.play:active{transform:translateY(1px) scale(.98)}
+.pi{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(90deg,var(--kh-accent) 50%,#2d8de6 50%)}
+.pi svg{width:14px;height:14px;fill:#fff;margin-left:2px}
+.film{margin:auto;width:min(1100px,92vw);max-width:none;max-height:none;padding:0;border:0;background:transparent;overflow:visible;color:#fff}
+.film::backdrop{background:rgba(6,7,10,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.film[open]{animation:filmIn .35s var(--ease)}
+@keyframes filmIn{from{opacity:0;transform:translateY(14px) scale(.98)}}
+.film-in{position:relative;padding:2px;border-radius:16px;background:linear-gradient(90deg,var(--kh-accent),#6fd0ff);box-shadow:0 30px 90px rgba(0,0,0,.6)}
+.film video{display:block;width:100%;aspect-ratio:16/9;border-radius:14px;background:#000}
+.film-x{position:absolute;top:-48px;right:0;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(20,20,24,.7);color:#fff;font:300 26px/1 var(--sans);cursor:pointer}
+.film-x:hover{background:rgba(40,40,46,.85)}
 
 /* ---- each plugin, on its side ---- */
 .side{position:absolute;z-index:3;top:0;bottom:0;width:50%;display:flex;align-items:flex-end;justify-content:center;padding:clamp(120px,18vh,180px) clamp(24px,5vw,84px) clamp(70px,11vh,120px)}
@@ -133,6 +149,8 @@ html.intro-done .top,html.intro-done .side .block,html.intro-done .foot,html.int
   .side-org{padding-top:96px;padding-bottom:84px}
   .top{top:24px}
   .tag{font-size:12.5px}
+  .play{margin-top:12px;height:38px;font-size:13px}
+  .film{width:94vw}
   .foot{bottom:16px;color:#fff}
   .gl:not(.still) #gl{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh}
   .side-kh .block,.side-org .block{transform:none}

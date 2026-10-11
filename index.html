@@ -61,6 +61,7 @@
     <p class="wm">Isma Plugins</p>
     <i class="wm-line" aria-hidden="true"></i>
     <p class="tag">Two free plugins for Premiere Pro, made by an editor.</p>
+    <button class="play" type="button" aria-haspopup="dialog" aria-controls="film"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span>See both in 45 seconds</button>
   </header>
 
   <section class="side side-kh" aria-labelledby="kh-name">
@@ -89,6 +90,13 @@
     </div>
   </section>
 
+  <dialog class="film" id="film" aria-label="Isma Plugins in 45 seconds">
+    <div class="film-in">
+      <video id="film-v" controls playsinline preload="none" poster="film/poster.jpg"><source src="film/isma-plugins.mp4" type="video/mp4"></video>
+      <form method="dialog"><button class="film-x" aria-label="Close the video">×</button></form>
+    </div>
+  </dialog>
+
   <footer class="foot">Free and open source · Not affiliated with Adobe · <a href="https://github.com/Apocale">github.com/Apocale</a></footer>
 </main>
 
@@ -107,6 +115,16 @@
   </defs>
 </svg>
 
+<script>
+  // the 45-second video: opens over both worlds, plays with sound, pauses when closed
+  (function () {
+    var d = document.getElementById('film'), v = document.getElementById('film-v'), b = document.querySelector('.play');
+    if (!d || !d.showModal) { b.addEventListener('click', function () { location.href = 'film/isma-plugins.mp4'; }); return; }
+    b.addEventListener('click', function () { d.showModal(); try { v.currentTime = 0; } catch (e) {} var p = v.play(); if (p && p.catch) p.catch(function () {}); });
+    d.addEventListener('close', function () { v.pause(); });
+    d.addEventListener('click', function (e) { if (e.target === d) d.close(); });
+  })();
+</script>
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",

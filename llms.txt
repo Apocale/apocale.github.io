@@ -13,3 +13,6 @@ Premiere Pro panel (Mac and Windows, Premiere Pro 2022 to 2026). One click files
 - Site: https://apocale.github.io/isma-organizer/
 - Download: https://github.com/Apocale/isma-organizer/archive/refs/heads/main.zip
 - Source: https://github.com/Apocale/isma-organizer
+
+## Video
+A 45-second video shows both plugins at work in Premiere Pro 2026 (Khanjar's ⌘J palette, then Isma Organizer and its Pinterest B-roll tab): https://apocale.github.io/film/isma-plugins.mp4 — it opens from the "See both in 45 seconds" button on the page.
