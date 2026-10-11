@@ -6,4 +6,8 @@ Khanjar on the left (black, fire, the dagger), Isma Organizer on the right (Frut
 A static page, no build step: `index.html`, `style.css`, `scene.js` (the 3D layer, Three.js 0.169 from a CDN)
 and `shared/dagger.js` (the Khanjar dagger, the same as on its site).
 
+Direction C ("nuit / jour"): `scene.js` draws one landscape across the whole width, from Khanjar's night to
+Isma Organizer's day, with the dusk between them following the mouse. Its pieces are in `world/` (the sky, the ground,
+the dagger's stone, the embers and bubbles, the sun's flare). Without WebGL the two CSS worlds stay.
+
 Run it locally: `python3 -m http.server 8770` in this folder, then open http://localhost:8770.
