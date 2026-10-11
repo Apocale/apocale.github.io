@@ -35,9 +35,9 @@ function resize() {
   renderer.setSize(W, H, false);
   camera.aspect = W / H; camera.updateProjectionMatrix();
   // the dagger: in the upper part of Khanjar's half on a computer, of its screen on a phone
-  const at = phone ? toWorld(W * .5, H * .17) : toWorld(W * .25, H * .3);
+  const at = phone ? toWorld(W * .5, H * .15) : toWorld(W * .25, H * .27);
   pivot.position.copy(at);
-  const px = phone ? W * .62 : W * .26;                // the dagger's length on screen
+  const px = phone ? W * .58 : W * .22;                // the dagger's length on screen
   pivot.scale.setScalar(px / W * (VH * W / H) / 4.5);
 }
 resize();
